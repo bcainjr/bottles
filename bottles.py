@@ -9,6 +9,7 @@
 # Creation of the 99 Bottles on the wall song
 
 
+import sys
 import random
 
 
@@ -37,19 +38,26 @@ def bottlePrint(bottle=99, beverage="beer"):
                            "{0} bottle of {1}!\n" \
                            "Take one down\n" \
                            "And pass it around\n" \
-                           "No more bottles of beer on the wall!"
+                           "No more bottles of {1} on the wall!"
             print(singleBottle.format(bottle, beverage))
 
 
 def main():
-    ans = input("Random # of bottles between 1 - 99 [y]es|[n]o? ")
-
-    if ans.lower() in ["y", "yes"]:
-        bottlePrint(random.randint(1, 100))
-    elif ans.lower() in ["n", "no"]:
-        bottlePrint()
+    if len(sys.argv) == 3 and 1 <= int(sys.argv[1]) <= 99:
+        bottlePrint(int(sys.argv[1]), sys.argv[2])
+    elif not(len(sys.argv) == 1):
+        print("Too many or too few arguements person.\n" \
+              "Enter a single number between 1 and 99.\n" \
+              "Followed by a beverage."
+             )
     else:
-        print("Invalid input...")
+        ans = input("Random # of bottles between 1 - 99 [y]es|[n]o? ")
+        if ans.lower() in ["y", "yes"]:
+            bottlePrint(random.randint(1, 100))
+        elif ans.lower() in ["n", "no"]:
+            bottlePrint()
+        else:
+            print("Invalid input...")
 
 
 if __name__ == "__main__":

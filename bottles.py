@@ -61,7 +61,11 @@ def main():
               "Enter a integer between 1 and 99.\n"
               "Followed by a beverage.")
     else:
-        ans = input("Random # of bottles between 1 - 99 [y]es|[n]o? ")
+        try:
+            ans = input("Random # of bottles between 1 - 99 [y]es|[n]o? ")
+        except (KeyboardInterrupt, EOFError):
+            print("\nYou shouldn't have done that...")
+            exit()
         if ans.lower() in ["y", "yes"]:
             bottlePrint(random.randint(1, 100), "beer")
         elif ans.lower() in ["n", "no"]:

@@ -13,28 +13,30 @@ import sys
 import time
 import random
 
+# Moved dictionary out of function for performance, was reccomended
+# by Ben Miramontes
+WORD_DICTIONARY = {0: "Zero", 1: "One", 2: "Two", 3: "Three", 4: "Four",
+                   5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
+                   10: "Ten", 11: "Eleven", 12: "Twelve", 13: "Thirteen",
+                   14: "Fourteen", 15: "Fifteen", 16: "Sixteen",
+                   17: "Seventeen", 18: "Eighteen", 19: "Nineteen",
+                   20: "Twenty", 30: "Thirty", 40: "Fourty", 50: "Fifty",
+                   60: "Sixty", 70: "Seventy", 80: "Eighty", 90: "Ninety"}
 
-def numToWord(num):
+
+def toWord(num):
     """
         A function used to change a number to its word equivalent.
     """
 
-    wordDict = {1: "One", 2: "Two", 3: "Three", 4: "Four",
-                5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
-                10: "Ten", 11: "Eleven", 12: "Twelve", 13: "Thirteen",
-                14: "Fourteen", 15: "Fifteen", 16: "Sixteen",
-                17: "Seventeen", 18: "Eighteen", 19: "Nineteen",
-                20: "Twenty", 30: "Thirty", 40: "Fourty", 50: "Fifty",
-                60: "Sixty", 70: "Seventy", 80: "Eighty", 90: "Ninety"
-                }
-
     if num >= 20:
         if num % 10 == 0:
-            return wordDict[num - num % 10]
+            return WORD_DICTIONARY[num - num % 10]
         else:
-            return wordDict[num - num % 10] + "-" + wordDict[num % 10].lower()
+            return WORD_DICTIONARY[num - num % 10] + "-" \
+                + WORD_DICTIONARY[num % 10].lower()
     elif num < 20:
-        return wordDict[num]
+        return WORD_DICTIONARY[num]
 
 
 def bottlePrint(bottle, beverage):
@@ -42,42 +44,31 @@ def bottlePrint(bottle, beverage):
         A function to control how many bottles are sung
         in the bottles on the wall song.
     """
-
-    # BottleStr is a dictionary to help declutter prints
-    # ln = singular Line and sLn = plural Line
-    # 1, 2, 7 sLn contains "bottles" vs 1, 2, 7 ln contains "bottle"
-    bottleStr = {"1 sLn": "{0} bottles of {1} on the wall!\n",
-                 "1 ln": "{0} bottle of {1} on the wall!\n",
-                 "2 sLn": "{0} bottles of {1}!\n",
-                 "2 ln": "{0} bottle of {1}!\n",
-                 "5 ln": "Take one down\n",
-                 "6 ln": "And pass it around\n",
-                 "7 sLn": "{2} bottles of {1} on the wall!\n",
-                 "7 ln": "{2} bottle of {1} on the wall!\n",
-                 "No bottles": "No more bottles of {1} on the wall!"
-                 }
+    bottlePlural = "bottles"
+    bottleSingular = "bottles"
 
     for bottle in range(bottle, 0, -1):
-        if bottle > 2:
-            print((bottleStr["1 sLn"] + bottleStr["2 sLn"] +
-                   bottleStr["5 ln"] + bottleStr["6 ln"] + bottleStr["7 sLn"]
-                   ).format(numToWord(bottle), beverage,
-                            numToWord(bottle - 1)))
-        elif bottle == 2:
-            print((bottleStr["1 sLn"] + bottleStr["1 sLn"] +
-                   bottleStr["5 ln"] + bottleStr["6 ln"] + bottleStr["7 ln"]
-                   ).format(numToWord(bottle), beverage,
-                            numToWord(bottle - 1)))
-        else:
-            print((bottleStr["1 ln"] + bottleStr["2 ln"] + bottleStr["5 ln"] +
-                   bottleStr["6 ln"] + bottleStr["No bottles"]
-                   ).format(numToWord(bottle), beverage,
-                            numToWord(bottle - 1)))
+        lastLine = toWord(bottle - 1)
+
+        if bottle == 2:
+            bottleSingular = "bottle"
+        elif bottle == 1:
+            bottlePlural = "bottle"
+            bottleSingular = "bottles"
+            lastLine = "No more"
+
+        print(("{0} {1} of {3} on the wall!\n"
+               "{0} {1} of {3}!\n"
+               "Take one down\n"
+               "And pass it around\n"
+               "{4} {2} of {3} on the wall!\n"
+               ).format(toWord(bottle), bottlePlural, bottleSingular, beverage,
+                        lastLine))
 
 
 def main():
     # Start time for performance
-    start = time.perf_counter()
+    start = time.time()
 
     if len(sys.argv) == 3 and sys.argv[1].isdigit() \
        and 1 <= int(sys.argv[1]) <= 99:
@@ -100,7 +91,7 @@ def main():
             print("Invalid input... Enter yes... or no...")
 
     # End time for performance
-    end = time.perf_counter()
+    end = time.time()
 
     print("\nPerformance: {} seconds".format(end - start))
 

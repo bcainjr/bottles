@@ -14,52 +14,58 @@ import time
 import random
 
 
-def bottlePrint(bottle=99, beverage="beer"):
+def bottlePrint(bottle, beverage):
     """
         A function to control how many bottles are sung
         in the bottles on the wall song.
     """
-    bottleStr = "{0} bottles of {1} on the wall!\n"  \
-                "{0} bottles of {1}!\n" \
-                "Take one down\n" \
-                "And pass it around\n" \
-                "{2}"
+
+    # BottleStr is a dictionary to help declutter prints
+    # ln = singular Line and sLn = plural Line
+    # 1, 2, 7 sLn contains "bottles" vs 1, 2, 7 ln contains "bottle"
+    bottleStr = {"1 sLn": "{0} bottles of {1} on the wall!\n",
+                 "1 ln": "{0} bottle of {1} on the wall!\n",
+                 "2 sLn": "{0} bottles of {1}!\n",
+                 "2 ln": "{0} bottle of {1}!\n",
+                 "5 ln": "Take one down\n",
+                 "6 ln": "And pass it around\n",
+                 "7 sLn": "{2} bottles of {1} on the wall!\n",
+                 "7 ln": "{2} bottle of {1} on the wall!\n",
+                 "No bottles": "No more bottles of {1} on the wall!"
+                 }
 
     for bottle in range(bottle, 0, -1):
         if bottle > 2:
-            print(bottleStr.format(bottle, beverage,
-                  str(bottle - 1) + " bottles of " +
-                  beverage + " on the wall!\n"))
+            print((bottleStr["1 sLn"] + bottleStr["2 sLn"] +
+                   bottleStr["5 ln"] + bottleStr["6 ln"] + bottleStr["7 sLn"]
+                   ).format(bottle, beverage, bottle - 1))
         elif bottle == 2:
-            print(bottleStr.format(bottle, beverage,
-                  str(bottle - 1) + " bottle of " +
-                  beverage + " on the wall!\n"))
+            print((bottleStr["1 sLn"] + bottleStr["1 sLn"] +
+                   bottleStr["5 ln"] + bottleStr["6 ln"] + bottleStr["7 ln"]
+                   ).format(bottle, beverage, bottle - 1))
         else:
-            singleBottle = "{0} bottle of {1} on the wall!\n" \
-                           "{0} bottle of {1}!\n" \
-                           "Take one down\n" \
-                           "And pass it around\n" \
-                           "No more bottles of {1} on the wall!"
-            print(singleBottle.format(bottle, beverage))
+            print((bottleStr["1 ln"] + bottleStr["2 ln"] + bottleStr["5 ln"] +
+                   bottleStr["6 ln"] + bottleStr["No bottles"]
+                   ).format(bottle, beverage, bottle - 1))
 
 
 def main():
     # Start time for performance
     start = time.perf_counter()
 
-    if len(sys.argv) == 3 and 1 <= int(sys.argv[1]) <= 99:
+    if len(sys.argv) == 3 and sys.argv[1].isdigit() \
+       and 1 <= int(sys.argv[1]) <= 99:
         bottlePrint(int(sys.argv[1]), sys.argv[2])
     elif not(len(sys.argv) == 1):
-        print("Too many or too few arguements person.\n" \
-              "Enter a single number between 1 and 99.\n" \
-              "Followed by a beverage."
-             )
+        print("Too many or too few arguements person.\n"
+              "Enter a integer between 1 and 99.\n"
+              "Followed by a beverage.")
     else:
         ans = input("Random # of bottles between 1 - 99 [y]es|[n]o? ")
         if ans.lower() in ["y", "yes"]:
-            bottlePrint(random.randint(1, 100))
+            bottlePrint(random.randint(1, 100), "beer")
         elif ans.lower() in ["n", "no"]:
-            bottlePrint()
+            bottlePrint(99, "beer")
         else:
             print("Invalid input...")
 

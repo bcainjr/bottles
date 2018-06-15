@@ -10,6 +10,7 @@
 
 
 import sys
+import time
 import random
 
 
@@ -43,6 +44,9 @@ def bottlePrint(bottle=99, beverage="beer"):
 
 
 def main():
+    # Start time for performance
+    start = time.perf_counter()
+
     if len(sys.argv) == 3 and 1 <= int(sys.argv[1]) <= 99:
         bottlePrint(int(sys.argv[1]), sys.argv[2])
     elif not(len(sys.argv) == 1):
@@ -59,6 +63,10 @@ def main():
         else:
             print("Invalid input...")
 
+    # End time for performance
+    end = time.perf_counter()
+
+    print("\nPerformance: {} seconds".format(end - start))
 
 if __name__ == "__main__":
     main()

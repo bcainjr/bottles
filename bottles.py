@@ -9,6 +9,9 @@
 # Creation of the 99 Bottles on the wall song
 
 
+import random
+
+
 def bottlePrint(bottle=99, beverage="beer"):
     """
         A function to control how many bottles are sung
@@ -39,7 +42,14 @@ def bottlePrint(bottle=99, beverage="beer"):
 
 
 def main():
-    bottlePrint()
+    ans = input("Random # of bottles between 1 - 99 [y]es|[n]o? ")
+
+    if ans.lower() in ["y", "yes"]:
+        bottlePrint(random.randint(1, 100))
+    elif ans.lower() in ["n", "no"]:
+        bottlePrint()
+    else:
+        print("Invalid input...")
 
 
 if __name__ == "__main__":
